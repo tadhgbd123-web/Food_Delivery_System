@@ -59,7 +59,7 @@ public class MenuItemDAO
         }
     }
 
-    //DELETE
+    //DELETE (D)
     public void deleteMenuItem(int itemID) throws Exception
     {
         String query = "DELETE FROM MenuItems WHERE itemID = ?";

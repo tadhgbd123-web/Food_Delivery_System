@@ -36,7 +36,9 @@ public class CustomerDAO
                 list.add(
                         rs.getInt("idCustomer") + " | " +
                                 rs.getString("name") + " | " +
-                                rs.getString("email"));
+                                rs.getString("email") + " | " +
+                                rs.getString("phoneNumber") + " | " +
+                                rs.getString("address"));
 
             }
             return list;
@@ -44,15 +46,18 @@ public class CustomerDAO
     }
 
         //UPDATE (U)
-        public void updateCustomerEmail(int id, String email) throws Exception
+        public void updateCustomer(int id, String name, String email, String phone, String address) throws Exception
         {
-            String query = "UPDATE Customer SET email=? WHERE idCustomer=?";
+            String query = "UPDATE Customer SET name=?, email=?,  phoneNumber=?,  address=? WHERE idCustomer=?";
 
             try(Connection con = DB.getConnection();
                 PreparedStatement ps = con.prepareStatement(query))
             {
-                ps.setString(1, email);
-                ps.setInt(2, id);
+                ps.setString(1, name);
+                ps.setString(2, email);
+                ps.setString(3, phone);
+                ps.setString(4, address);
+                ps.setInt(5, id);
                 ps.executeUpdate();
             }
         }
