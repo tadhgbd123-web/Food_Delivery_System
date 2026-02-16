@@ -26,8 +26,9 @@ public class MenuItemDAO
     }
 
     // Read / Receive (R)
-    public List<String> getAllMenuItems() throws Exception {
-        String query = "SELECT itemID, name, price, available FROM MenuItems";
+    public List<String> getAllMenuItems() throws Exception
+    {
+        String query = "SELECT itemID, restaurantID, name, price, available FROM MenuItems";
         List<String> list = new ArrayList<>();
 
         try (Connection con = DB.getConnection();
@@ -36,7 +37,8 @@ public class MenuItemDAO
             while (rs.next()) {
                 list.add(
                         rs.getInt("itemID") + " | " +
-                                rs.getString("name") + " | €" +
+                                rs.getInt("restaurantID") + " | " +
+                                rs.getString("name") + " | " +
                                 rs.getDouble("price") + " | Available: " +
                                 rs.getBoolean("available"));
 
@@ -46,15 +48,18 @@ public class MenuItemDAO
     }
 
     //UPDATE (U)
-    public void updatePrice(int itemID, double newPrice) throws Exception
+    public void updateMenuItem(int itemID, int newRestaurantID, String newName, double newPrice, boolean available) throws Exception
     {
-        String query = "UPDATE MenuItems SET price=? WHERE itemID=?";
+        String query = "UPDATE MenuItems SET restaurantID=?, name=?, price=?, available=? WHERE itemID=?";
 
         try(Connection con = DB.getConnection();
             PreparedStatement ps = con.prepareStatement(query))
         {
-            ps.setDouble(1, newPrice);
-            ps.setInt(2, itemID);
+            ps.setInt(1, newRestaurantID);
+            ps.setString(2, newName);
+            ps.setDouble(3, newPrice);
+            ps.setBoolean(4, available);
+            ps.setInt(5, itemID);
             ps.executeUpdate();
         }
     }
