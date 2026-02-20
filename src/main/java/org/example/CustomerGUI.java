@@ -19,6 +19,7 @@ public class CustomerGUI extends JFrame
     JButton addButton;
     JButton deleteButton;
     JButton updateButton;
+    JButton backButton;
 
     // Declare a table to display customers and a table model to manage the data in the table
     JTable customerTable;
@@ -34,10 +35,10 @@ public class CustomerGUI extends JFrame
         setTitle("Customer Management");
 
         // Set the size of the window
-        setSize(600, 600);
+        setSize(700, 600);
 
         // Set the default close operation
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Set the layout manager
         setLayout(new BorderLayout());
@@ -57,6 +58,7 @@ public class CustomerGUI extends JFrame
         addButton = new JButton("Add Customer");
         deleteButton = new JButton("Delete Customer");
         updateButton = new JButton("Update Customer");
+        backButton = new JButton("Back to Main Menu");
 
         // adds an action listener to the 'add' button, allowing it to add a new customer when clicked
         addButton.addActionListener(e ->
@@ -141,12 +143,14 @@ public class CustomerGUI extends JFrame
         formPanel.add(addressField);
 
         // Create a panel for the buttons and add the buttons to it
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setPreferredSize(new Dimension(600, 50));
 
         // Add buttons to the button panel
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(updateButton);
+        buttonPanel.add(backButton);
 
 
         // Set up the table to display customers
@@ -208,6 +212,13 @@ public class CustomerGUI extends JFrame
             }
         });
 
+        // Add action listener for the back button to return to the main menu
+        backButton.addActionListener(e ->
+        {
+            new MainMenuGUI();
+            dispose();
+        });
+
         // Create a scroll pane for the table and add the table to it
         JScrollPane scrollPane = new JScrollPane(customerTable);
 
@@ -223,6 +234,8 @@ public class CustomerGUI extends JFrame
         add(buttonPanel, BorderLayout.SOUTH);
         add(tablePanel, BorderLayout.CENTER);
 
+        // Center the window on the screen
+        setLocationRelativeTo(null);
 
         // Add action listener to the button
         setVisible(true);

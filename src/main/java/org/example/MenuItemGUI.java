@@ -18,6 +18,8 @@ public class MenuItemGUI extends JFrame
     JButton addButton;
     JButton deleteButton;
     JButton updateButton;
+    JButton backButton;
+
 
     // Declare a table to display Menu Items and a table model to manage the data in the table
     JTable menuItemTable;
@@ -33,7 +35,7 @@ public class MenuItemGUI extends JFrame
         setTitle("Menu Item Management");
 
         // Set the size of the window
-        setSize(600, 500);
+        setSize(700, 600);
 
         // Set the default close operation
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -58,6 +60,8 @@ public class MenuItemGUI extends JFrame
         addButton = new JButton("Add Menu Item");
         deleteButton = new JButton("Delete Menu Item");
         updateButton = new JButton("Update Menu Item");
+        backButton = new JButton("Back to Main Menu");
+
 
         // adds an action listener to the 'add' button, allowing it to add a new item when clicked
         addButton.addActionListener(e ->
@@ -142,12 +146,14 @@ public class MenuItemGUI extends JFrame
         formPanel.add(availableCheckBox);
 
         // Create a panel for the buttons and add the buttons to it
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setPreferredSize(new Dimension(600, 60));
 
         // Add buttons to the button panel
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(updateButton);
+        buttonPanel.add(backButton);
 
 
         // Set up the table to display Menu Items
@@ -214,6 +220,13 @@ public class MenuItemGUI extends JFrame
             }
         });
 
+        // Button to return to main menu
+        backButton.addActionListener(e ->
+        {
+            new MainMenuGUI();
+            dispose();
+        });
+
         // Create a scroll pane for the table and add the table to it
         JScrollPane scrollPane = new JScrollPane(menuItemTable);
 
@@ -226,9 +239,11 @@ public class MenuItemGUI extends JFrame
 
         // Add panels to the frame
         add(formPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.SOUTH);
         add(tablePanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
+
+        setLocationRelativeTo(null);
 
         // Add action listener to the button
         setVisible(true);

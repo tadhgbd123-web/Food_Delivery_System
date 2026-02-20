@@ -36,7 +36,7 @@ public class OrdersDAO
                         rs.getInt("orderID") + " | " +
                                 rs.getInt("customerID") + " | " +
                                 rs.getTimestamp("orderDate") + " | " +
-                                rs.getString("status") + " | €" +
+                                rs.getString("status") + " | " +
                                 rs.getDouble("total"));
 
             }
