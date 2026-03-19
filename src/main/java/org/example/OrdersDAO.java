@@ -58,6 +58,31 @@ public class OrdersDAO
             ps.executeUpdate();
         }
     }
+
+    // Uses an INNER JOIN between Orders and Customer tables
+    public List<String> getOrdersItemWithName() throws Exception
+    {
+        String query = "SELECT Orders.orderID, Customer.name, Orders.total " +
+                "FROM Orders " +
+                "INNER JOIN Customer ON Orders.customerID = Customer.idCustomer";
+
+        List<String> list = new ArrayList<>();
+
+        try (Connection con = DB.getConnection();
+             PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
+                list.add(
+                        rs.getInt("orderID") + " | " +
+                                rs.getString("name") + " | " +
+                                rs.getDouble("total")
+                );
+            }
+        }
+        return list;
+    }
 }
 
 

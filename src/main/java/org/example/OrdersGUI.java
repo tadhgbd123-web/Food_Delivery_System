@@ -2,6 +2,12 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.example.OrdersDAO;
 
 
@@ -10,8 +16,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
-public class OrdersGUI extends JFrame
-{
+public class OrdersGUI extends JFrame {
     JLabel customerIDLabel, statusLabel, totalLabel;
 
     JTextField customerIDField, statusField, totalField;
@@ -23,8 +28,7 @@ public class OrdersGUI extends JFrame
 
     OrdersDAO dao = new OrdersDAO();
 
-    public OrdersGUI()
-    {
+    public OrdersGUI() {
         setTitle("Order Management");
 
         setSize(700, 600);
@@ -45,7 +49,7 @@ public class OrdersGUI extends JFrame
         updateButton = new JButton("Update Order");
         backButton = new JButton("Back to Main Menu");
 
-        JPanel formPanel = new JPanel(new GridLayout(3,2,5,5));
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 5, 5));
 
         formPanel.add(customerIDLabel);
         formPanel.add(customerIDField);
@@ -65,10 +69,8 @@ public class OrdersGUI extends JFrame
         tableModel = new DefaultTableModel();
 
         tableModel.addColumn("Order ID");
-        tableModel.addColumn("Customer ID");
-        tableModel.addColumn("Order Date");
-        tableModel.addColumn("Order Status");
-        tableModel.addColumn("Order Total");
+        tableModel.addColumn("Customer Name");
+        tableModel.addColumn("Total");
 
         ordersTable = new JTable(tableModel);
 
@@ -104,58 +106,51 @@ public class OrdersGUI extends JFrame
         });
 
         addButton.addActionListener(e ->
-                {
-                    try
-                    {
-                        int customerID = Integer.parseInt(customerIDField.getText());
+        {
+            try {
+                int customerID = Integer.parseInt(customerIDField.getText());
 
-                        String status = statusField.getText();
+                String status = statusField.getText();
 
-                        double total = Double.parseDouble(totalField.getText());
+                double total = Double.parseDouble(totalField.getText());
 
-                        dao.createOrder(customerID, status, total);
+                dao.createOrder(customerID, status, total);
 
-                        loadOrdersTable();
+                loadOrdersTable();
 
-                        JOptionPane.showMessageDialog(this, "Order Created!");
+                JOptionPane.showMessageDialog(this, "Order Created!");
 
-                    }
-                    catch(Exception ex)
-                    {
-                        JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
-                    }
-                });
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
+            }
+        });
 
 
         updateButton.addActionListener(e ->
-                {
-                    try
-                    {
-                        int row = ordersTable.getSelectedRow();
+        {
+            try {
+                int row = ordersTable.getSelectedRow();
 
-                        if(row == -1)
-                        {
-                            JOptionPane.showMessageDialog(this, "Please select an order!");
-                            return;
-                        }
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Please select an order!");
+                    return;
+                }
 
-                        int orderID = Integer.parseInt(ordersTable.getValueAt(row, 0).toString());
+                int orderID = Integer.parseInt(ordersTable.getValueAt(row, 0).toString());
 
-                        String status = statusField.getText();
+                String status = statusField.getText();
 
-                        dao.updateOrderStatus(orderID, status);
+                dao.updateOrderStatus(orderID, status);
 
-                        loadOrdersTable();
+                loadOrdersTable();
 
-                        JOptionPane.showMessageDialog(this, "Order Updated!");
-                    }
-                    catch(Exception ex)
-                    {
-                        JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
-                    }
+                JOptionPane.showMessageDialog(this, "Order Updated!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
+            }
 
 
-                });
+        });
 
         // Add action listener for the back button to return to the main menu
         backButton.addActionListener(e ->
@@ -165,22 +160,19 @@ public class OrdersGUI extends JFrame
         });
 
     }
-    public void loadOrdersTable()
-    {
+
+    public void loadOrdersTable() {
         try {
             tableModel.setRowCount(0);
 
-            for (String order : dao.getAllOrders()) {
+            for (String order : dao.getOrdersItemWithName()) {
                 tableModel.addRow(order.split(" \\| "));
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error loading orders: " + e.getMessage());
         }
 
     }
-
 }
 
 

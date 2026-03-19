@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class MainMenuGUI extends JFrame
 {
-    JButton customerButton, ordersButton, menuItemButton, exitButton;
+    JButton customerButton, ordersButton, menuItemButton, orderItemButton,exitButton;
 
     public MainMenuGUI()
     {
@@ -20,11 +20,13 @@ public class MainMenuGUI extends JFrame
         customerButton = new JButton("Customer Management");
         ordersButton = new JButton("Order Management");
         menuItemButton = new JButton("Menu Items Management");
+        orderItemButton = new JButton("Order Item Management");
         exitButton = new JButton("Exit");
 
         add(customerButton);
         add(ordersButton);
         add(menuItemButton);
+        add(orderItemButton);
         add(exitButton);
 
         customerButton.addActionListener(e ->
@@ -36,6 +38,12 @@ public class MainMenuGUI extends JFrame
         ordersButton.addActionListener(e ->
         {
             new OrdersGUI();
+            dispose();
+        });
+
+        orderItemButton.addActionListener(e ->
+        {
+            new OrderItemGUI();
             dispose();
         });
 
