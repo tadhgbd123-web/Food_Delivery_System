@@ -23,7 +23,7 @@ public class OrdersDAO
     // Read / Receive (R)
     public List<String> getAllOrders() throws Exception
     {
-        String query = "SELECT orderID, customerID, orderDate, status, total FROM Orders";
+        String query = "SELECT orderID, customerID, status, orderDate, total FROM Orders";
         List<String> list = new ArrayList<>();
 
         try (Connection con = DB.getConnection();
@@ -45,15 +45,16 @@ public class OrdersDAO
     }
 
     // UPDATE STATUS
-    public void updateOrderStatus(int orderID, String status) throws Exception {
+    public void updateOrderStatus(int orderID, String status, double total) throws Exception {
 
-        String query = "UPDATE Orders SET status=? WHERE orderID=?";
+        String query = "UPDATE Orders SET status=?, total=? WHERE orderID=?";
 
         try(Connection con = DB.getConnection();
             PreparedStatement ps = con.prepareStatement(query)) {
 
             ps.setString(1, status);
-            ps.setInt(2, orderID);
+            ps.setDouble(2, total);
+            ps.setInt(3, orderID);
 
             ps.executeUpdate();
         }
@@ -62,7 +63,7 @@ public class OrdersDAO
     // Uses an INNER JOIN between Orders and Customer tables
     public List<String> getOrdersItemWithName() throws Exception
     {
-        String query = "SELECT Orders.orderID, Customer.name, Orders.total " +
+        String query = "SELECT Orders.orderID, Customer.name, Orders.orderDate, Orders.Status, Orders.total " +
                 "FROM Orders " +
                 "INNER JOIN Customer ON Orders.customerID = Customer.idCustomer";
 
@@ -77,6 +78,8 @@ public class OrdersDAO
                 list.add(
                         rs.getInt("orderID") + " | " +
                                 rs.getString("name") + " | " +
+                                rs.getString("orderDate") + " | " +
+                                rs.getString("status") + " | " +
                                 rs.getDouble("total")
                 );
             }

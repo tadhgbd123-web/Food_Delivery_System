@@ -70,6 +70,8 @@ public class OrdersGUI extends JFrame {
 
         tableModel.addColumn("Order ID");
         tableModel.addColumn("Customer Name");
+        tableModel.addColumn("Order Date");
+        tableModel.addColumn("Status");
         tableModel.addColumn("Total");
 
         ordersTable = new JTable(tableModel);
@@ -96,11 +98,10 @@ public class OrdersGUI extends JFrame {
         {
             int row = ordersTable.getSelectedRow();
 
-            if (row != -1) {
-                customerIDField.setText(tableModel.getValueAt(row, 1).toString());
-
+            if (row != -1)
+            {
+                customerIDField.setText("");
                 statusField.setText(tableModel.getValueAt(row, 3).toString());
-
                 totalField.setText(tableModel.getValueAt(row, 4).toString());
             }
         });
@@ -139,8 +140,9 @@ public class OrdersGUI extends JFrame {
                 int orderID = Integer.parseInt(ordersTable.getValueAt(row, 0).toString());
 
                 String status = statusField.getText();
+                double total = Double.parseDouble(totalField.getText());
 
-                dao.updateOrderStatus(orderID, status);
+                dao.updateOrderStatus(orderID, status, total);
 
                 loadOrdersTable();
 
