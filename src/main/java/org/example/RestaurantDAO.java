@@ -42,13 +42,18 @@ public class RestaurantDAO {
     }
 
     // Update (U)
-    public void updateRestaurantPhone(int id, String phone) throws Exception {
-        String query = "UPDATE Restaurant SET phone=? WHERE restaurantID=?";
+    public void updateRestaurant(int id, String name, String address, String phone) throws Exception
+    {
+        String query = "UPDATE Restaurant SET name=?, address=?, phone=? WHERE restaurantID=?";
 
         try (Connection con = DB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setString(1, phone);
-            ps.setInt(2, id);
+             PreparedStatement ps = con.prepareStatement(query))
+        {
+            ps.setString(1, name);
+            ps.setString(2, address);
+            ps.setString(3, phone);
+            ps.setInt(4, id);
+
             ps.executeUpdate();
         }
     }

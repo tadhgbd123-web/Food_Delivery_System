@@ -66,14 +66,40 @@ public class MenuItemGUI extends JFrame
         // adds an action listener to the 'add' button, allowing it to add a new item when clicked
         addButton.addActionListener(e ->
         {
+            // Empty check
+            if (restaurantIDField.getText().trim().isEmpty() ||
+                    nameField.getText().trim().isEmpty() ||
+                    priceField.getText().trim().isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "Please enter valid fields for RestaurantID and Price, and ensure all fields are filled!");
+                return;
+            }
+
+            String name = nameField.getText().trim();
+            int restaurantID;
+            double price;
+
+
+            try {
+                // Get the input values from the text fields
+                restaurantID = Integer.parseInt(restaurantIDField.getText());
+                price = Double.parseDouble(priceField.getText());
+            }
+            catch (NumberFormatException ex)
+            {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                return;
+            }
+
+            if (price < 0)
+            {
+                JOptionPane.showMessageDialog(this, "Price cannot be negative!");
+                return;
+            }
+
+            boolean availability = availableCheckBox.isSelected();
             try
             {
-                // Get the input values from the text fields
-                int restaurantID = Integer.parseInt(restaurantIDField.getText());
-                String name = nameField.getText();
-                double price = Double.parseDouble(priceField.getText());
-                boolean availability = availableCheckBox.isSelected();
-
                 // Calls the createMenuItems Method from the DAO to add a new customer to the DB
                 dao.createMenuItem(restaurantID, name , price, availability);
 
@@ -93,7 +119,7 @@ public class MenuItemGUI extends JFrame
             catch (Exception ex)
             {
                 // Displays an error message if there is an issue
-                JOptionPane.showMessageDialog(this, "Error adding Items: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Error adding menu items: " + ex.getMessage());
             }
         });
 
@@ -107,7 +133,7 @@ public class MenuItemGUI extends JFrame
                 if (selectedRow == -1)
                 {
                     // If no row is selected, show a message to the user and exit the method
-                    JOptionPane.showMessageDialog(this, "Plesase select an Item to delete.");
+                    JOptionPane.showMessageDialog(this, "Please select an Item to delete.");
                     return;
                 }
 
@@ -191,23 +217,53 @@ public class MenuItemGUI extends JFrame
         // Add action listener for the update button to update the selected Menu Item's info
         updateButton.addActionListener(e ->
         {
+            // Get the index of the selected row in the table
+            int selectedRow = menuItemTable.getSelectedRow();
+
+            // Check if a row is selected, if not, display a message and return
+            if (selectedRow == -1)
+            {
+                JOptionPane.showMessageDialog(this, "Please select an item to update.");
+                return;
+            }
+
+            // Check if any fields were empty
+            if (restaurantIDField.getText().trim().isEmpty() ||
+                    nameField.getText().trim().isEmpty() ||
+                    priceField.getText().trim().isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "All fields must be filled!");
+                return;
+            }
+
+            int menuItemID = Integer.parseInt(tableModel.getValueAt(selectedRow, 0).toString());
+            String name = nameField.getText().trim();
+
+            int restaurantID;
+            double price;
+
+            try {
+
+                restaurantID = Integer.parseInt(restaurantIDField.getText());
+                price = Double.parseDouble(priceField.getText().replace("€", ""));
+            }
+            catch (NumberFormatException ex)
+            {
+                JOptionPane.showMessageDialog(this, "Please enter valid numbers for Restaurant ID and Price.");
+                return;
+            }
+
+            // Validation to ensure the price cannot be a negative number
+            if (price < 0)
+            {
+                JOptionPane.showMessageDialog(this, "Price cannot be negative!");
+                return;
+            }
+
+            boolean availability = availableCheckBox.isSelected();
+
             try
             {
-                // Get the index of the selected row in the table
-                int selectedRow = menuItemTable.getSelectedRow();
-                // Check if a row is selected, if not, display a message and return
-                if (selectedRow == -1)
-                {
-                    JOptionPane.showMessageDialog(this, "Please select an Item to update.");
-                    return;
-                }
-
-                int menuItemID = Integer.parseInt(tableModel.getValueAt(selectedRow, 0).toString());
-                int restaurantID = Integer.parseInt(restaurantIDField.getText());
-                String name = nameField.getText();
-                double price = Double.parseDouble(priceField.getText().replace("€", ""));
-                boolean availability = availableCheckBox.isSelected();
-
                 dao.updateMenuItem(menuItemID, restaurantID, name, price, availability);
 
                 JOptionPane.showMessageDialog(this, "Item updated successfully!");

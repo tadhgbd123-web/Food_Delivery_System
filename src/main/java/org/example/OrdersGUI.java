@@ -24,7 +24,7 @@ public class OrdersGUI extends JFrame {
     JTable ordersTable;
     DefaultTableModel tableModel;
 
-    JButton addButton, updateButton, backButton;
+    JButton addButton, updateButton, deleteButton, backButton;
 
     OrdersDAO dao = new OrdersDAO();
 
@@ -47,6 +47,7 @@ public class OrdersGUI extends JFrame {
 
         addButton = new JButton("Add Order");
         updateButton = new JButton("Update Order");
+        deleteButton = new JButton("Delete Order");
         backButton = new JButton("Back to Main Menu");
 
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 5, 5));
@@ -64,6 +65,7 @@ public class OrdersGUI extends JFrame {
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
         buttonPanel.add(backButton);
 
         tableModel = new DefaultTableModel();
@@ -106,24 +108,48 @@ public class OrdersGUI extends JFrame {
             }
         });
 
+        // Button Logic
         addButton.addActionListener(e ->
         {
-            try {
-                int customerID = Integer.parseInt(customerIDField.getText());
-
-                String status = statusField.getText();
-
-                double total = Double.parseDouble(totalField.getText());
-
-                dao.createOrder(customerID, status, total);
-
-                loadOrdersTable();
-
-                JOptionPane.showMessageDialog(this, "Order Created!");
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
+            if (customerIDField.getText().trim().isEmpty() ||
+                    statusField.getText().trim().isEmpty() ||
+                    totalField.getText().trim().isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "All fields must be filled!");
+                return;
             }
+                String status = statusField.getText().trim();
+                int customerID;
+                double total;
+
+                try
+                {
+                    customerID = Integer.parseInt(customerIDField.getText());
+                    total = Double.parseDouble(totalField.getText());
+                }
+                catch (NumberFormatException ex)
+                {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number for Customer ID and Total");
+                    return;
+                }
+
+            // Validation to ensure the total cannot be a negative number
+            if (total < 0)
+            {
+                JOptionPane.showMessageDialog(this, "Total cannot be negative!");
+                return;
+            }
+
+               try
+               {
+                   dao.createOrder(customerID, status, total);
+                   loadOrdersTable();
+                   JOptionPane.showMessageDialog(this, "Order Created!");
+               }
+               catch (Exception ex)
+               {
+                JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
+               }
         });
 
 
@@ -132,26 +158,74 @@ public class OrdersGUI extends JFrame {
             try {
                 int row = ordersTable.getSelectedRow();
 
+
                 if (row == -1) {
                     JOptionPane.showMessageDialog(this, "Please select an order!");
+                    return;
+                }
+
+                // check for empty fields
+                if (statusField.getText().trim().isEmpty() || totalField.getText().trim().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, "All fields must be filled!");
                     return;
                 }
 
                 int orderID = Integer.parseInt(ordersTable.getValueAt(row, 0).toString());
 
                 String status = statusField.getText();
-                double total = Double.parseDouble(totalField.getText());
+                double total;
+                try
+                {
+                    total = Double.parseDouble(totalField.getText());
+                }
+                catch (NumberFormatException ex)
+                {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number for Customer ID and Total");
+                    return;
+                }
+
+                // Validation to ensure the total cannot be a negative number
+                if (total < 0)
+                {
+                    JOptionPane.showMessageDialog(this, "Total cannot be negative!");
+                    return;
+                }
 
                 dao.updateOrderStatus(orderID, status, total);
 
                 loadOrdersTable();
 
                 JOptionPane.showMessageDialog(this, "Order Updated!");
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
             }
+        });
 
+        // Delete button logic
+        deleteButton.addActionListener(e ->
+        {
+            try {
+                int row = ordersTable.getSelectedRow();
 
+                if (row == -1)
+                {
+                    JOptionPane.showMessageDialog(this, "Please select an order!");
+                    return;
+                }
+
+                int orderID = Integer.parseInt(ordersTable.getValueAt(row, 0).toString());
+
+                dao.deleteOrder(orderID);
+                JOptionPane.showMessageDialog(this, "Order Deleted Successfully!");
+                loadOrdersTable();
+            }
+            catch (Exception ex)
+            {
+                JOptionPane.showMessageDialog(this, "Error! " + ex.getMessage());
+            }
         });
 
         // Add action listener for the back button to return to the main menu

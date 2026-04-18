@@ -80,22 +80,62 @@ public class OrderItemGUI extends JFrame
         // Button Actions
         addButton.addActionListener(e ->
         {
-            try {
-                int orderID = Integer.parseInt(orderIDTextField.getText());
-                int itemID = Integer.parseInt(itemIDTextField.getText());
-                int quantity = Integer.parseInt(quantityTextField.getText());
-                double total = Double.parseDouble(totalTextField.getText());
+            //Check for empty fields
+            if(orderIDTextField.getText().trim().isEmpty() ||
+                    itemIDTextField.getText().trim().isEmpty() ||
+                    quantityTextField.getText().trim().isEmpty() ||
+                    totalTextField.getText().trim().isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                return;
+            }
 
+            int orderID;
+            int itemID;
+            int quantity;
+            double total;
+            try
+            {
+                orderID = Integer.parseInt(orderIDTextField.getText());
+                itemID = Integer.parseInt(itemIDTextField.getText());
+                quantity = Integer.parseInt(quantityTextField.getText());
+                total = Double.parseDouble(totalTextField.getText());
+            }
+            catch (Exception ex)
+            {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+                return;
+            }
+
+            // Check is quantity inputted is less than or equal to 0, out put message if it is
+            if (quantity <= 0)
+            {
+                JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!");
+                return;
+            }
+
+            // Check if total is less than 0 and outputs the message if it is
+            if (total < 0)
+            {
+                JOptionPane.showMessageDialog(this, "Total must be greater than or equal to 0!");
+                return;
+            }
+
+            try
+            {
+                // Call to the database
                 orderItemDAO.createOrderItem(orderID, itemID, quantity, total);
 
                 loadTable();
 
                 JOptionPane.showMessageDialog(this, "Order Item Added Successfully!");
+
             }
             catch (Exception ex)
-            {
+                {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
+                }
+
         });
 
         updateButton.addActionListener(e ->
@@ -103,15 +143,57 @@ public class OrderItemGUI extends JFrame
             try {
                 int row = table.getSelectedRow();
 
+                // Check of row is selected
+                if (row == -1)
+                {
+                    JOptionPane.showMessageDialog(this, "Please select an order item to update.");
+                    return;
+                }
+
+                // Check if there is any empty fields
+                if (quantityTextField.getText().trim().isEmpty() || totalTextField.getText().trim().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                    return;
+                }
+
                 int id = Integer.parseInt(model.getValueAt(row, 0).toString());
 
-                orderItemDAO.updateOrderItem(id, Integer.parseInt(quantityTextField.getText()), Double.parseDouble(totalTextField.getText())
-                );
+
+                int quantity;
+                double total;
+
+                try
+                {
+                    quantity = Integer.parseInt(quantityTextField.getText());
+                    total = Double.parseDouble(totalTextField.getText());
+                }
+                catch (NumberFormatException ex)
+                {
+                    JOptionPane.showMessageDialog(this, "Please enter valid numbers for Quantity and Total.");
+                    return;
+                }
+
+                // Validations
+                // Validation for quantity
+                if (quantity <= 0)
+                {
+                    JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!");
+                    return;
+                }
+
+                if (total < 0)
+                {
+                    JOptionPane.showMessageDialog(this, "Total must be greater than or equal to 0!");
+                    return;
+                }
+
+
+                orderItemDAO.updateOrderItem(id, quantity, total);
 
                 JOptionPane.showMessageDialog(this, "Order Item updated Successfully!");
 
                 loadTable();
-
             }
             catch (Exception ex)
             {
@@ -124,17 +206,26 @@ public class OrderItemGUI extends JFrame
             try {
                 int row = table.getSelectedRow();
 
+                if (row == -1)
+                {
+                    JOptionPane.showMessageDialog(this, "Please select an order item to delete.");
+                    return;
+                }
+
                 int id = Integer.parseInt(model.getValueAt(row, 0).toString());
 
-                JOptionPane.showMessageDialog(null, "Order Item Deleted Successfully!");
 
                 orderItemDAO.deleteOrderItem(id);
+
+                JOptionPane.showMessageDialog(this, "Order Item Deleted Successfully!");
+
                 loadTable();
 
             }
             catch (Exception ex)
             {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+
             }
         });
 

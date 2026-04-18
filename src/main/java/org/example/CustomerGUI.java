@@ -65,11 +65,43 @@ public class CustomerGUI extends JFrame
         {
             try
             {
+                // Check to see if any fields had been left empty, if so, display a message and return
+                if (nameField.getText().trim().isEmpty() ||
+                        emailField.getText().trim().isEmpty() ||
+                        phoneField.getText().trim().isEmpty() ||
+                        addressField.getText().trim().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please fill all the fields");
+                    return;
+                }
+
+                if (nameField.getText().trim().isEmpty() || emailField.getText().trim().isEmpty() ||
+                        phoneField.getText().trim().isEmpty() || addressField.getText().trim().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                    return;
+                }
+
+                String email = emailField.getText().trim();
+
+                if (!email.contains("@") || !email.contains("."))
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid email");
+                    return;
+                }
+
+                String phone = phoneField.getText().trim();
+
+                // Check if phone number contains only digits using a regular expression. If it contains any non-digit characters, display an error message and return.
+                if (!phone.matches("\\d+"))
+                {
+                    JOptionPane.showMessageDialog(this, "Phone must contain only numbers!");
+                    return;
+                }
+
                 // Get the input values from the text fields
-                String name = nameField.getText();
-                String email = emailField.getText();
-                String phone = phoneField.getText();
-                String address = addressField.getText();
+                String name = nameField.getText().trim();
+                String address = addressField.getText().trim();
 
                 // Calls the createCustomer Method from the DAO to add a new customer to the DB
                 dao.createCustomer(name, email , phone, address);
@@ -183,6 +215,35 @@ public class CustomerGUI extends JFrame
         // Add action listener for the update button to update the selected customer's info
         updateButton.addActionListener(e ->
         {
+            // Checks if there is any empty fields
+            if (nameField.getText().trim().isEmpty() ||
+                    emailField.getText().trim().isEmpty() ||
+                    phoneField.getText().trim().isEmpty() ||
+                    addressField.getText().trim().isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "All fields must be filled!");
+                return;
+            }
+
+            //Validations for email and phone number
+
+            String email = emailField.getText().trim();
+
+            if (!email.contains("@") || !email.contains("."))
+            {
+                JOptionPane.showMessageDialog(this, "Invalid email format!");
+                return;
+            }
+
+            String phone = phoneField.getText().trim();
+
+            // Check if phone number contains only digits using a regular expression. If it contains any non-digit characters, display an error message and return.
+            if (!phone.matches("\\d+"))
+            {
+                JOptionPane.showMessageDialog(this, "Phone must contain only numbers!");
+                return;
+            }
+
             try
             {
                 // Get the index of the selected row in the table
@@ -196,8 +257,6 @@ public class CustomerGUI extends JFrame
 
                 int customerID = Integer.parseInt(tableModel.getValueAt(selectedRow, 0).toString());
                 String name = nameField.getText();
-                String email = emailField.getText();
-                String phone = phoneField.getText();
                 String address = addressField.getText();
 
                 dao.updateCustomer(customerID, name, email, phone, address);

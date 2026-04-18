@@ -7,7 +7,8 @@ import java.util.List;
 public class OrdersDAO
 {
     //Create (C)
-    public void createOrder(int customerID, String status, double total) throws Exception{
+    public void createOrder(int customerID, String status, double total) throws Exception
+    {
         String query = "INSERT INTO Orders (customerID, orderDate, status, total) VALUES (?, NOW(), ?, ?)";
 
         try (Connection con = DB.getConnection();
@@ -45,7 +46,8 @@ public class OrdersDAO
     }
 
     // UPDATE STATUS
-    public void updateOrderStatus(int orderID, String status, double total) throws Exception {
+    public void updateOrderStatus(int orderID, String status, double total) throws Exception
+    {
 
         String query = "UPDATE Orders SET status=?, total=? WHERE orderID=?";
 
@@ -58,6 +60,20 @@ public class OrdersDAO
 
             ps.executeUpdate();
         }
+    }
+
+    // Delete
+    public void deleteOrder(int orderID) throws Exception
+    {
+        String query = "DELETE FROM Orders WHERE orderID=?";
+
+        try(Connection con = DB.getConnection();
+            PreparedStatement ps = con.prepareStatement(query))
+        {
+            ps.setInt(1, orderID);
+            ps.executeUpdate();
+        }
+
     }
 
     // Uses an INNER JOIN between Orders and Customer tables
