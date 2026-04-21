@@ -75,9 +75,7 @@ public class OrderItemDAO
 
     public List<String> getOrderItemsWithNames() throws Exception
     {
-        String query = "SELECT OrderItem.OrderItemID, MenuItems.name, OrderItem.quantity, OrderItem.lineTotal " +
-                "FROM OrderItem " +
-                "INNER JOIN MenuItems ON OrderItem.item_id = MenuItems.itemID";
+        String query = "SELECT OrderItemID, FK_orderID, item_id, quantity, lineTotal FROM OrderItem";
 
         List<String> list = new ArrayList<>();
 
@@ -89,7 +87,8 @@ public class OrderItemDAO
             {
                 list.add(
                         rs.getInt("OrderItemID") + " | " +
-                                rs.getString("name") + " | " +
+                                rs.getInt("FK_orderID") + " | " +
+                                rs.getInt("item_id") + " | " +
                                 rs.getInt("quantity") + " | " +
                                 rs.getDouble("lineTotal")
                 );

@@ -106,7 +106,7 @@ public class MenuItemGUI extends JFrame
                 // displays when an item is successfully added to the DB
                 JOptionPane.showMessageDialog(this, "Menu Item added successfully!");
 
-                // Clear the input fields after a items is added
+                // Clear the input fields after items is added
                 restaurantIDField.setText("");
                 nameField.setText("");
                 priceField.setText("");
@@ -267,6 +267,12 @@ public class MenuItemGUI extends JFrame
                 dao.updateMenuItem(menuItemID, restaurantID, name, price, availability);
 
                 JOptionPane.showMessageDialog(this, "Item updated successfully!");
+
+                // Clear the input fields after items is added
+                restaurantIDField.setText("");
+                nameField.setText("");
+                priceField.setText("");
+                availableCheckBox.setSelected(false);
 
                 loadMenuItemTable();
             }

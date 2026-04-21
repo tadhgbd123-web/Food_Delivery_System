@@ -28,7 +28,8 @@ public class OrdersGUI extends JFrame {
 
     OrdersDAO dao = new OrdersDAO();
 
-    public OrdersGUI() {
+    public OrdersGUI()
+    {
         setTitle("Order Management");
 
         setSize(700, 600);
@@ -71,12 +72,15 @@ public class OrdersGUI extends JFrame {
         tableModel = new DefaultTableModel();
 
         tableModel.addColumn("Order ID");
+        tableModel.addColumn("Customer ID");
         tableModel.addColumn("Customer Name");
         tableModel.addColumn("Order Date");
         tableModel.addColumn("Status");
         tableModel.addColumn("Total");
 
         ordersTable = new JTable(tableModel);
+
+
 
         JScrollPane scrollPane = new JScrollPane(ordersTable);
 
@@ -102,9 +106,9 @@ public class OrdersGUI extends JFrame {
 
             if (row != -1)
             {
-                customerIDField.setText("");
-                statusField.setText(tableModel.getValueAt(row, 3).toString());
-                totalField.setText(tableModel.getValueAt(row, 4).toString());
+                customerIDField.setText(tableModel.getValueAt(row, 1).toString());
+                statusField.setText(tableModel.getValueAt(row, 4).toString());
+                totalField.setText(tableModel.getValueAt(row, 5).toString());
             }
         });
 
@@ -145,6 +149,11 @@ public class OrdersGUI extends JFrame {
                    dao.createOrder(customerID, status, total);
                    loadOrdersTable();
                    JOptionPane.showMessageDialog(this, "Order Created!");
+
+                   // Clear the input fields after items is added
+                   customerIDField.setText("");
+                   statusField.setText("");
+                   totalField.setText("");
                }
                catch (Exception ex)
                {
@@ -192,11 +201,17 @@ public class OrdersGUI extends JFrame {
                     return;
                 }
 
-                dao.updateOrderStatus(orderID, status, total);
+                int customerID = Integer.parseInt(customerIDField.getText());
+                dao.updateOrderStatus(orderID, customerID, status, total);
 
                 loadOrdersTable();
 
                 JOptionPane.showMessageDialog(this, "Order Updated!");
+
+                // Clear the input fields after items is added
+                customerIDField.setText("");
+                statusField.setText("");
+                totalField.setText("");
             }
             catch (Exception ex)
             {

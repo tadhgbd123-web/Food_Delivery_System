@@ -77,10 +77,11 @@ public class RestaurantGUI extends JFrame
             String address = addressField.getText().trim();
             String phone = phoneField.getText().trim();
 
-            // Phone validation
-            if (!phone.matches("\\d+"))
+            // Check if phone number matches the specified format using a regular expression. If it does not match, display an error message and return.
+            // allows brackets, followed by 3 digit, followed by an optional space, followed by 7 digits
+            if (!phone.matches("\\(?\\d{3}\\)?\\s?\\d{7}"))
             {
-                JOptionPane.showMessageDialog(this, "Phone must contain only numbers!");
+                JOptionPane.showMessageDialog(this, "Invalid phone number format!");
                 return;
             }
 
@@ -217,10 +218,11 @@ public class RestaurantGUI extends JFrame
                 String address = addressField.getText().trim();
                 String phone = phoneField.getText().trim();
 
-                // Phone validation
-                if (!phone.matches("\\d+"))
+                // Check if phone number matches the specified format using a regular expression. If it does not match, display an error message and return.
+                // allows brackets, followed by 3 digit, followed by an optional space, followed by 7 digits
+                if (!phone.matches("\\(?\\d{3}\\)?\\s?\\d{7}"))
                 {
-                    JOptionPane.showMessageDialog(this, "Phone must contain only numbers!");
+                    JOptionPane.showMessageDialog(this, "Invalid phone number format!");
                     return;
                 }
 
@@ -230,6 +232,11 @@ public class RestaurantGUI extends JFrame
                 dao.updateRestaurant(restaurantID, name, address, phone);
 
                 JOptionPane.showMessageDialog(this, "Restaurant updated successfully!");
+
+                // Clear the input fields after a Restaurant is added
+                nameField.setText("");
+                addressField.setText("");
+                phoneField.setText("");
 
                 loadRestaurantTable();
             }

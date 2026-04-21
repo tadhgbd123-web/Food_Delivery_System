@@ -92,10 +92,11 @@ public class CustomerGUI extends JFrame
 
                 String phone = phoneField.getText().trim();
 
-                // Check if phone number contains only digits using a regular expression. If it contains any non-digit characters, display an error message and return.
-                if (!phone.matches("\\d+"))
+                // Check if phone number matches the specified format using a regular expression. If it does not match, display an error message and return.
+                // allows brackets, followed by 3 digit, followed by an optional space, followed by 7 digits
+                if (!phone.matches("\\(?\\d{3}\\)?\\s?\\d{7}"))
                 {
-                    JOptionPane.showMessageDialog(this, "Phone must contain only numbers!");
+                    JOptionPane.showMessageDialog(this, "Invalid phone number format!");
                     return;
                 }
 
@@ -225,10 +226,10 @@ public class CustomerGUI extends JFrame
                 return;
             }
 
-            //Validations for email and phone number
 
             String email = emailField.getText().trim();
 
+            //Validations for email and phone number
             if (!email.contains("@") || !email.contains("."))
             {
                 JOptionPane.showMessageDialog(this, "Invalid email format!");
@@ -237,10 +238,11 @@ public class CustomerGUI extends JFrame
 
             String phone = phoneField.getText().trim();
 
-            // Check if phone number contains only digits using a regular expression. If it contains any non-digit characters, display an error message and return.
-            if (!phone.matches("\\d+"))
+            // Check if phone number matches the specified format using a regular expression. If it does not match, display an error message and return.
+            // allows brackets, followed by 3 digit, followed by an optional space, followed by 7 digits
+            if (!phone.matches("\\(?\\d{3}\\)?\\s?\\d{7}"))
             {
-                JOptionPane.showMessageDialog(this, "Phone must contain only numbers!");
+                JOptionPane.showMessageDialog(this, "Invalid phone number format!");
                 return;
             }
 
@@ -262,6 +264,12 @@ public class CustomerGUI extends JFrame
                 dao.updateCustomer(customerID, name, email, phone, address);
 
                 JOptionPane.showMessageDialog(this, "Customer updated successfully!");
+
+                // Clear the input fields after a customer is added
+                nameField.setText("");
+                emailField.setText("");
+                phoneField.setText("");
+                addressField.setText("");
 
                 loadCustomerTable();
             }

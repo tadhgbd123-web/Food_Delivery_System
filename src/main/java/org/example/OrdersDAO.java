@@ -36,6 +36,7 @@ public class OrdersDAO
                 list.add(
                         rs.getInt("orderID") + " | " +
                                 rs.getInt("customerID") + " | " +
+                                rs.getString("name") + " | " +
                                 rs.getTimestamp("orderDate") + " | " +
                                 rs.getString("status") + " | " +
                                 rs.getDouble("total"));
@@ -46,17 +47,18 @@ public class OrdersDAO
     }
 
     // UPDATE STATUS
-    public void updateOrderStatus(int orderID, String status, double total) throws Exception
+    public void updateOrderStatus(int orderID, int customerID, String status, double total) throws Exception
     {
 
-        String query = "UPDATE Orders SET status=?, total=? WHERE orderID=?";
+        String query = "UPDATE Orders SET customerID = ?, status=?, total=? WHERE orderID=?";
 
         try(Connection con = DB.getConnection();
             PreparedStatement ps = con.prepareStatement(query)) {
 
-            ps.setString(1, status);
-            ps.setDouble(2, total);
-            ps.setInt(3, orderID);
+            ps.setInt(1, customerID);
+            ps.setString(2, status);
+            ps.setDouble(3, total);
+            ps.setInt(4, orderID);
 
             ps.executeUpdate();
         }
@@ -79,7 +81,7 @@ public class OrdersDAO
     // Uses an INNER JOIN between Orders and Customer tables
     public List<String> getOrdersItemWithName() throws Exception
     {
-        String query = "SELECT Orders.orderID, Customer.name, Orders.orderDate, Orders.Status, Orders.total " +
+        String query = "SELECT Orders.orderID, Orders.customerID, Customer.name, Orders.orderDate, Orders.Status, Orders.total " +
                 "FROM Orders " +
                 "INNER JOIN Customer ON Orders.customerID = Customer.idCustomer";
 
@@ -93,6 +95,7 @@ public class OrdersDAO
             {
                 list.add(
                         rs.getInt("orderID") + " | " +
+                                rs.getInt("customerID") + " | " +
                                 rs.getString("name") + " | " +
                                 rs.getString("orderDate") + " | " +
                                 rs.getString("status") + " | " +

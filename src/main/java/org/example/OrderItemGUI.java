@@ -62,7 +62,8 @@ public class OrderItemGUI extends JFrame
         model = new DefaultTableModel();
 
         model.addColumn("OrderItemID");
-        model.addColumn("Item Name");
+        model.addColumn("OrderID");
+        model.addColumn("ItemID");
         model.addColumn("Quantity");
         model.addColumn("Total");
 
@@ -125,6 +126,12 @@ public class OrderItemGUI extends JFrame
             {
                 // Call to the database
                 orderItemDAO.createOrderItem(orderID, itemID, quantity, total);
+
+                // Clear the input fields after items is added
+                orderIDTextField.setText("");
+                itemIDTextField.setText("");
+                quantityTextField.setText("");
+                totalTextField.setText("");
 
                 loadTable();
 
@@ -193,6 +200,12 @@ public class OrderItemGUI extends JFrame
 
                 JOptionPane.showMessageDialog(this, "Order Item updated Successfully!");
 
+                // Clear the input fields after items is added
+                orderIDTextField.setText("");
+                itemIDTextField.setText("");
+                quantityTextField.setText("");
+                totalTextField.setText("");
+
                 loadTable();
             }
             catch (Exception ex)
@@ -241,8 +254,10 @@ public class OrderItemGUI extends JFrame
 
             if(row != -1)
             {
-                quantityTextField.setText(model.getValueAt(row, 2).toString());
-                totalTextField.setText(model.getValueAt(row, 3).toString());
+                orderIDTextField.setText(model.getValueAt(row, 1).toString());
+                itemIDTextField.setText(model.getValueAt(row, 2).toString());
+                quantityTextField.setText(model.getValueAt(row, 3).toString());
+                totalTextField.setText(model.getValueAt(row, 4).toString());
             }
         });
 
@@ -256,7 +271,7 @@ public class OrderItemGUI extends JFrame
         {
             model.setRowCount(0);
 
-            for(String s : orderItemDAO.getOrderItemsWithNames())
+            for(String s : orderItemDAO.getAllOrderItems())
                 model.addRow(s.split(" \\| "));
         }
         catch (Exception e)
