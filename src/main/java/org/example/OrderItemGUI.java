@@ -271,7 +271,7 @@ public class OrderItemGUI extends JFrame
         {
             model.setRowCount(0);
 
-            for(String s : orderItemDAO.getAllOrderItems())
+            for(String s : orderItemDAO.getOrderItemsWithNames())
                 model.addRow(s.split(" \\| "));
         }
         catch (Exception e)
